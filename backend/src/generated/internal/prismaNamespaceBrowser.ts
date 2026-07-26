@@ -51,6 +51,13 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  Department: 'Department',
+  Project: 'Project',
+  ProjectMember: 'ProjectMember',
+  Task: 'Task',
+  TaskAssignee: 'TaskAssignee',
+  TaskSubtask: 'TaskSubtask',
+  TaskReport: 'TaskReport',
   User: 'User'
 } as const
 
@@ -70,13 +77,105 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const DepartmentScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  managerId: 'managerId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DepartmentScalarFieldEnum = (typeof DepartmentScalarFieldEnum)[keyof typeof DepartmentScalarFieldEnum]
+
+
+export const ProjectScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  client: 'client',
+  departmentId: 'departmentId',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+export const ProjectMemberScalarFieldEnum = {
+  id: 'id',
+  projectId: 'projectId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type ProjectMemberScalarFieldEnum = (typeof ProjectMemberScalarFieldEnum)[keyof typeof ProjectMemberScalarFieldEnum]
+
+
+export const TaskScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  status: 'status',
+  deadline: 'deadline',
+  estimatedHours: 'estimatedHours',
+  approvedById: 'approvedById',
+  approvedAt: 'approvedAt',
+  projectId: 'projectId',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum]
+
+
+export const TaskAssigneeScalarFieldEnum = {
+  id: 'id',
+  taskId: 'taskId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type TaskAssigneeScalarFieldEnum = (typeof TaskAssigneeScalarFieldEnum)[keyof typeof TaskAssigneeScalarFieldEnum]
+
+
+export const TaskSubtaskScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  isDone: 'isDone',
+  taskId: 'taskId',
+  createdAt: 'createdAt'
+} as const
+
+export type TaskSubtaskScalarFieldEnum = (typeof TaskSubtaskScalarFieldEnum)[keyof typeof TaskSubtaskScalarFieldEnum]
+
+
+export const TaskReportScalarFieldEnum = {
+  id: 'id',
+  content: 'content',
+  taskId: 'taskId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+} as const
+
+export type TaskReportScalarFieldEnum = (typeof TaskReportScalarFieldEnum)[keyof typeof TaskReportScalarFieldEnum]
+
+
 export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   password: 'password',
-  name: 'name',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  displayName: 'displayName',
+  birthDate: 'birthDate',
+  startDate: 'startDate',
+  nationalId: 'nationalId',
+  position: 'position',
   role: 'role',
-  department: 'department',
+  departmentId: 'departmentId',
   phone: 'phone',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

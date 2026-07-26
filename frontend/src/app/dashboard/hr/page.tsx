@@ -5,20 +5,23 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 export default function HRPage() {
   return (
     <ProtectedRoute allowedRoles={['HR_MANAGER']}>
-      <div>
-        <h1 className="text-2xl font-bold mb-4">پنل مدیریت - منابع انسانی</h1>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-xl shadow-sm">
-            <h3 className="text-gray-500 text-sm">پرسنل</h3>
-            <p className="text-3xl font-bold mt-2">-</p>
+      <div className="animate-fade-in space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-white">پنل مدیریت</h1>
+          <p className="text-text-muted text-sm mt-1">منابع انسانی</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="bg-card border border-[rgba(255,255,255,0.06)] rounded-[20px] p-6 hover:bg-card-hover transition-all duration-300">
+            <p className="text-text-muted text-sm">پرسنل</p>
+            <p className="text-4xl font-bold text-white mt-2">-</p>
           </div>
-          <div className="bg-white p-6 rounded-xl shadow-sm">
-            <h3 className="text-gray-500 text-sm">درخواست‌ها</h3>
-            <p className="text-3xl font-bold mt-2">-</p>
+          <div className="bg-card border border-[rgba(255,255,255,0.06)] rounded-[20px] p-6 hover:bg-card-hover transition-all duration-300">
+            <p className="text-text-muted text-sm">درخواست‌ها</p>
+            <p className="text-4xl font-bold text-white mt-2">-</p>
           </div>
-          <div className="bg-white p-6 rounded-xl shadow-sm">
-            <h3 className="text-gray-500 text-sm">حضور و غیاب</h3>
-            <p className="text-3xl font-bold mt-2">-</p>
+          <div className="bg-card border border-[rgba(255,255,255,0.06)] rounded-[20px] p-6 hover:bg-card-hover transition-all duration-300">
+            <p className="text-text-muted text-sm">حضور و غیاب</p>
+            <p className="text-4xl font-bold text-white mt-2">-</p>
           </div>
         </div>
       </div>

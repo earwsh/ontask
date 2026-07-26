@@ -2,9 +2,21 @@
 
 import { useEffect, useState } from 'react';
 import Sidebar from '@/components/Sidebar';
+import Header from '@/components/Header';
+import { ToastProvider } from '@/components/Toast';
+
+const roleLabels: Record<string, string> = {
+  CEO: 'مدیر عامل',
+  HR_MANAGER: 'مدیر منابع انسانی',
+  TECHNICAL_MANAGER: 'مدیر فنی',
+  DEPARTMENT_MANAGER: 'مدیر دپارتمان',
+  EMPLOYEE: 'کارمند',
+  CUSTOMER: 'مشتری',
+};
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<{ role: string; name: string } | null>(null);
+  const [user, setUser] = useState<{ role: string; firstName: string; lastName: string } | null>(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     try {
@@ -29,9 +41,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100" dir="rtl">
-      <Sidebar role={user.role} onLogout={handleLogout} />
-      <main className="flex-1 p-8">{children}</main>
+    <div className="flex min-h-screen bg-surface" dir="rtl">
+      <Sidebar role={user.role} onLogout={handleLogout} collapsed={sidebarCollapsed} />
+      <div className="flex-1 flex flex-col min-w-0 min-h-screen">
+        <Header onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)} userName={user.firstName} userRole={roleLabels[user.role] || ''} />
+        <main className="flex-1 p-6 md:p-8 animate-fade-in">
+          <ToastProvider>{children}</ToastProvider>
+        </main>
+      </div>
     </div>
   );
 }

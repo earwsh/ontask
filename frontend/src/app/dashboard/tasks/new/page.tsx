@@ -1,0 +1,288 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import ShamsiDatePicker from '@/components/ShamsiDatePicker';
+import { useToast } from '@/components/Toast';
+import api from '@/lib/api';
+
+export default function NewTaskPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { showToast } = useToast();
+  const projectId = searchParams.get('projectId');
+
+  const [projectName, setProjectName] = useState('');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [deadline, setDeadline] = useState('');
+  const [estimatedHours, setEstimatedHours] = useState('');
+  const [assigneeIds, setAssigneeIds] = useState<number[]>([]);
+  const [subtasks, setSubtasks] = useState<string[]>(['']);
+  const [projectUsers, setProjectUsers] = useState<{ id: number; firstName: string; lastName: string; email: string }[]>([]);
+  const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!projectId) {
+      router.push('/dashboard/projects');
+      return;
+    }
+    const stored = localStorage.getItem('user');
+    if (stored) {
+      const u = JSON.parse(stored);
+      if (!['TECHNICAL_MANAGER', 'DEPARTMENT_MANAGER'].includes(u.role)) {
+        router.push('/dashboard/projects');
+        return;
+      }
+    }
+    const id = parseInt(projectId);
+    api.get(`/projects/${id}`).then(({ data }) => {
+      setProjectName(data.name);
+      setProjectUsers(data.members.map((m: any) => m.user));
+    }).catch(() => router.push('/dashboard/projects'))
+    .finally(() => setLoading(false));
+  }, [projectId]);
+
+  const addSubtask = () => setSubtasks([...subtasks, '']);
+  const removeSubtask = (i: number) => setSubtasks(subtasks.filter((_, idx) => idx !== i));
+  const updateSubtask = (i: number, val: string) => {
+    const copy = [...subtasks];
+    copy[i] = val;
+    setSubtasks(copy);
+  };
+
+  const toggleAssignee = (uid: number) => {
+    setAssigneeIds((prev) => prev.includes(uid) ? prev.filter((id) => id !== uid) : [...prev, uid]);
+  };
+
+  const selectAll = () => setAssigneeIds(projectUsers.map((u) => u.id));
+  const deselectAll = () => setAssigneeIds([]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title || !projectId || assigneeIds.length === 0) return;
+    setSaving(true);
+    try {
+      const { data } = await api.post('/tasks', {
+        title,
+        description,
+        projectId: parseInt(projectId),
+        assigneeIds,
+        deadline: deadline || undefined,
+        estimatedHours: estimatedHours ? parseFloat(estimatedHours) : undefined,
+        subtasks: subtasks.filter((s) => s.trim()).map((s) => ({ title: s })),
+      });
+      router.push(`/dashboard/tasks/${data.id}`);
+      showToast('تسک با موفقیت ایجاد شد');
+    } catch (err: any) {
+      showToast(err.response?.data?.error || 'خطا در ایجاد تسک', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) return null;
+
+  return (
+    <ProtectedRoute allowedRoles={['TECHNICAL_MANAGER', 'DEPARTMENT_MANAGER']}>
+      <div className="h-full flex flex-col overflow-hidden animate-fade-in">
+        <div className="flex items-center justify-between shrink-0 mb-6">
+          <div className="flex items-center gap-4">
+            <button onClick={() => router.back()} className="w-9 h-9 rounded-xl flex items-center justify-center text-text-muted hover:text-white hover:bg-card-hover transition-all cursor-pointer" title="بازگشت">
+              <svg className="w-5 h-5 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+            <div>
+              <h1 className="text-xl font-bold text-white">تسک جدید</h1>
+              <div className="flex items-center gap-2 text-text-muted text-xs">
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                </svg>
+                <span>پروژه: {projectName}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="flex-1 flex flex-col min-h-0">
+          <div className="flex-1 grid grid-rows-[auto_1fr] gap-4 min-h-0">
+            <div className="bg-card border border-[rgba(255,255,255,0.06)] rounded-[20px] p-5 shrink-0">
+              <div className="grid grid-cols-12 gap-4">
+                <div className="col-span-6">
+                  <label className="flex items-center gap-1.5 text-xs font-medium text-text-secondary mb-1.5">
+                    <svg className="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    عنوان تسک *
+                  </label>
+                  <input type="text" required value={title} onChange={(e) => setTitle(e.target.value)}
+                    className="w-full px-4 py-2.5 bg-[rgba(22,27,38,0.6)] border border-[rgba(255,255,255,0.08)] rounded-xl text-white placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all duration-200"
+                    placeholder="عنوان تسک را وارد کنید" />
+                </div>
+                <div className="col-span-3">
+                  <label className="flex items-center gap-1.5 text-xs font-medium text-text-secondary mb-1.5">
+                    <svg className="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    زمان تخمینی
+                  </label>
+                  <div className="relative">
+                    <input type="number" min="0" step="0.5" value={estimatedHours} onChange={(e) => setEstimatedHours(e.target.value)}
+                      className="w-full px-4 py-2.5 bg-[rgba(22,27,38,0.6)] border border-[rgba(255,255,255,0.08)] rounded-xl text-white placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all duration-200"
+                      placeholder="۰" />
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-xs">ساعت</span>
+                  </div>
+                </div>
+                <div className="col-span-3">
+                  <label className="flex items-center gap-1.5 text-xs font-medium text-text-secondary mb-1.5">
+                    <svg className="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    ددلاین
+                  </label>
+                  <ShamsiDatePicker value={deadline} onChange={setDeadline} placeholder="انتخاب تاریخ" />
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-12 gap-4 min-h-0">
+              <div className="col-span-5 flex flex-col gap-4 min-h-0">
+                <div className="bg-card border border-[rgba(255,255,255,0.06)] rounded-[20px] p-5 flex flex-col flex-1 min-h-0">
+                  <label className="flex items-center gap-1.5 text-xs font-medium text-text-secondary mb-3 shrink-0">
+                    <svg className="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                    توضیحات
+                  </label>
+                  <textarea value={description} onChange={(e) => setDescription(e.target.value)}
+                    className="w-full flex-1 px-4 py-2.5 bg-[rgba(22,27,38,0.6)] border border-[rgba(255,255,255,0.08)] rounded-xl text-white placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all duration-200 resize-none min-h-0"
+                    placeholder="توضیحات تسک را وارد کنید..." />
+                </div>
+
+                <div className="bg-card border border-[rgba(255,255,255,0.06)] rounded-[20px] p-5 flex flex-col flex-1 min-h-0">
+                  <div className="flex items-center justify-between mb-3 shrink-0">
+                    <label className="flex items-center gap-1.5 text-xs font-medium text-text-secondary">
+                      <svg className="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                      </svg>
+                      زیرلیست
+                    </label>
+                    <button type="button" onClick={addSubtask} className="text-xs text-primary hover:text-primary-hover flex items-center gap-1 transition-all cursor-pointer">
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                      </svg>
+                      افزودن آیتم
+                    </button>
+                  </div>
+                  <div className="flex-1 min-h-0 overflow-y-auto space-y-1.5">
+                    {subtasks.map((s, i) => (
+                      <div key={i} className="flex items-center gap-2 bg-[rgba(22,27,38,0.6)] rounded-lg px-3 py-1.5 group">
+                        <div className="w-1.5 h-1.5 rounded-full bg-text-muted shrink-0" />
+                        <input type="text" value={s} onChange={(e) => updateSubtask(i, e.target.value)}
+                          className="w-full bg-transparent text-white placeholder-text-muted text-sm focus:outline-none"
+                          placeholder={`آیتم ${i + 1}`} />
+                        {subtasks.length > 1 && (
+                          <button type="button" onClick={() => removeSubtask(i)} className="p-1 text-text-muted hover:text-danger opacity-0 group-hover:opacity-100 transition-all shrink-0">
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                    {subtasks.length === 0 && (
+                      <p className="text-text-muted text-xs text-center py-4">هنوز آیتمی اضافه نشده</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="col-span-7 flex flex-col min-h-0">
+                <div className="bg-card border border-[rgba(255,255,255,0.06)] rounded-[20px] p-5 flex flex-col flex-1 min-h-0">
+                  <div className="flex items-center justify-between mb-3 shrink-0">
+                    <label className="flex items-center gap-1.5 text-xs font-medium text-text-secondary">
+                      <svg className="w-3.5 h-3.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                      </svg>
+                      انجام‌دهندگان *
+                    </label>
+                    {projectUsers.length > 0 && (
+                      <div className="flex gap-3 text-xs">
+                        <button type="button" onClick={selectAll} className="text-primary hover:text-primary-hover transition-all">انتخاب همه</button>
+                        <button type="button" onClick={deselectAll} className="text-text-muted hover:text-white transition-all">لغو همه</button>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 min-h-0 overflow-y-auto">
+                    {projectUsers.length > 0 ? (
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {projectUsers.map((u) => (
+                          <label key={u.id} onClick={() => toggleAssignee(u.id)} className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl cursor-pointer transition-all border ${
+                              assigneeIds.includes(u.id)
+                                ? 'border-primary/40 bg-primary/[0.06] shadow-[inset_0_0_0_1px_rgba(99,102,241,0.15)]'
+                                : 'border-transparent hover:bg-card-hover'
+                            }`}>
+                            <div className={`w-4.5 h-4.5 rounded-md border-2 flex items-center justify-center transition-all shrink-0 ${
+                              assigneeIds.includes(u.id) ? 'bg-primary border-primary' : 'border-[rgba(255,255,255,0.2)]'
+                            }`}>
+                              {assigneeIds.includes(u.id) && (
+                                <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <span className="text-sm text-white block truncate">{u.firstName} {u.lastName}</span>
+                              <span className="text-xs text-text-muted truncate block">{u.email}</span>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center py-8 text-text-muted">
+                        <svg className="w-10 h-10 mb-2 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                        </svg>
+                        <p className="text-xs">هیچ عضوی در این پروژه وجود ندارد</p>
+                        <p className="text-xs opacity-60">ابتدا اعضا را به پروژه اضافه کنید</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 mt-4 shrink-0">
+            <button type="submit" disabled={saving || !title || assigneeIds.length === 0}
+              className="flex-1 h-11 bg-primary hover:bg-primary-hover disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl font-medium text-sm transition-all flex items-center justify-center gap-2">
+              {saving ? (
+                <>
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  در حال ذخیره...
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  ایجاد تسک
+                </>
+              )}
+            </button>
+            <button type="button" onClick={() => router.back()}
+              className="h-11 px-6 bg-card-hover text-text-secondary hover:text-white rounded-xl font-medium text-sm transition-all">
+              انصراف
+            </button>
+          </div>
+        </form>
+      </div>
+    </ProtectedRoute>
+  );
+}

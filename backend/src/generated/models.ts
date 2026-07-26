@@ -8,5 +8,12 @@
  *
  * 🟢 You can import this file directly.
  */
+export type * from './models/Department'
+export type * from './models/Project'
+export type * from './models/ProjectMember'
+export type * from './models/Task'
+export type * from './models/TaskAssignee'
+export type * from './models/TaskSubtask'
+export type * from './models/TaskReport'
 export type * from './models/User'
 export type * from './commonInputTypes'
