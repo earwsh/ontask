@@ -75,12 +75,14 @@ export default function ProjectDetailPage() {
 
   const [memberUserId, setMemberUserId] = useState('');
   const [deptUsers, setDeptUsers] = useState<{ id: number; firstName: string; lastName: string; email: string }[]>([]);
+  const [userId, setUserId] = useState<number>(0);
 
   useEffect(() => {
     const stored = localStorage.getItem('user');
     if (stored) {
       const u = JSON.parse(stored);
       setRole(u.role);
+      setUserId(u.id);
     }
   }, []);
 
@@ -108,6 +110,7 @@ export default function ProjectDetailPage() {
   }, [activeTab, project]);
 
   const canManage = ['TECHNICAL_MANAGER', 'DEPARTMENT_MANAGER'].includes(role);
+  const canApprove = ['CEO', 'HR_MANAGER', 'TECHNICAL_MANAGER', 'DEPARTMENT_MANAGER'].includes(role);
 
   const handleAddMember = async () => {
     if (!memberUserId) return;
@@ -126,6 +129,16 @@ export default function ProjectDetailPage() {
       await api.delete(`/projects/${id}/members/${userId}`);
       fetchProject();
       showToast('عضو با موفقیت حذف شد');
+    } catch (err: any) {
+      showToast(err.response?.data?.error || 'خطا', 'error');
+    }
+  };
+
+  const handleQuickStatus = async (taskId: number, status: string) => {
+    try {
+      await api.patch(`/tasks/${taskId}/status`, { status });
+      fetchProject();
+      showToast(status === 'DONE' ? 'تسک تایید شد' : 'تسک برای تایید ارسال شد');
     } catch (err: any) {
       showToast(err.response?.data?.error || 'خطا', 'error');
     }
@@ -266,26 +279,46 @@ export default function ProjectDetailPage() {
                         </div>
                         <div className="flex-1 min-h-0 overflow-y-auto space-y-2">
                           {tasks.map((task) => (
-                            <Link key={task.id} href={`/dashboard/tasks/${task.id}`}
-                              className="block text-right bg-[rgba(22,27,38,0.6)] border border-[rgba(255,255,255,0.04)] hover:border-primary/30 rounded-xl p-3 transition-all group">
-                              <h4 className="text-sm font-medium text-white group-hover:text-primary transition-colors">{task.title}</h4>
-                              <div className="flex items-center justify-between mt-2 text-xs text-text-muted">
-                                <div className="flex items-center gap-1.5 min-w-0">
-                                  <svg className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                  </svg>
-                                  <span className="truncate">{task.assignees?.map((a) => a.user.firstName).join(', ') || '-'}</span>
-                                </div>
-                                {task._count.reports > 0 && (
-                                  <span className="flex items-center gap-1 shrink-0">
-                                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                      <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                            <div key={task.id}
+                              className="bg-[rgba(22,27,38,0.6)] border border-[rgba(255,255,255,0.04)] rounded-xl p-3 transition-all group hover:border-primary/30">
+                              <Link href={`/dashboard/tasks/${task.id}`} className="block text-right">
+                                <h4 className="text-sm font-medium text-white group-hover:text-primary transition-colors">{task.title}</h4>
+                                <div className="flex items-center justify-between mt-2 text-xs text-text-muted">
+                                  <div className="flex items-center gap-1.5 min-w-0">
+                                    <svg className="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                     </svg>
-                                    {task._count.reports}
-                                  </span>
-                                )}
-                              </div>
-                            </Link>
+                                    <span className="truncate">{task.assignees?.map((a) => a.user.firstName).join(', ') || '-'}</span>
+                                  </div>
+                                  {task._count.reports > 0 && (
+                                    <span className="flex items-center gap-1 shrink-0">
+                                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                      </svg>
+                                      {task._count.reports}
+                                    </span>
+                                  )}
+                                </div>
+                              </Link>
+                              {col === 'PENDING_APPROVAL' && canApprove && (
+                                <button onClick={() => handleQuickStatus(task.id, 'DONE')}
+                                  className="mt-2 w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-medium bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-all cursor-pointer active:scale-[0.97]">
+                                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                  </svg>
+                                  تایید
+                                </button>
+                              )}
+                              {['TODO', 'IN_PROGRESS'].includes(col) && role === 'EMPLOYEE' && task.assignees?.some((a) => a.user.id === userId) && (
+                                <button onClick={() => handleQuickStatus(task.id, 'PENDING_APPROVAL')}
+                                  className="mt-2 w-full flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-medium bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-all cursor-pointer active:scale-[0.97]">
+                                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                  </svg>
+                                  ارسال برای تایید
+                                </button>
+                              )}
+                            </div>
                           ))}
                           {tasks.length === 0 && (
                             <div className="flex flex-col items-center justify-center py-6 text-text-muted">
@@ -313,14 +346,17 @@ export default function ProjectDetailPage() {
                           <th className="text-right px-4 py-3 text-text-muted font-medium">وضعیت</th>
                           <th className="text-right px-4 py-3 text-text-muted font-medium">گزارشات</th>
                           <th className="text-right px-4 py-3 text-text-muted font-medium">تاریخ</th>
+                          <th className="text-center px-4 py-3 text-text-muted font-medium">عملیات</th>
                         </tr>
                       </thead>
                       <tbody>
                         {project.tasks.map((task) => (
-                          <tr key={task.id} onClick={() => router.push(`/dashboard/tasks/${task.id}`)}
-                            className="border-b border-[rgba(255,255,255,0.03)] hover:bg-card-hover transition-colors cursor-pointer">
+                          <tr key={task.id}
+                            className="border-b border-[rgba(255,255,255,0.03)] hover:bg-card-hover transition-colors">
                             <td className="px-4 py-3">
-                              <span className="text-white font-medium">{task.title}</span>
+                              <button onClick={() => router.push(`/dashboard/tasks/${task.id}`)} className="cursor-pointer text-white font-medium hover:text-primary transition-colors text-right">
+                                {task.title}
+                              </button>
                             </td>
                             <td className="px-4 py-3">
                               <span className="text-text-secondary">{task.assignees?.map((a) => a.user.firstName + ' ' + a.user.lastName).join(', ')}</span>
@@ -333,11 +369,39 @@ export default function ProjectDetailPage() {
                             </td>
                             <td className="px-4 py-3 text-text-muted">{task._count.reports}</td>
                             <td className="px-4 py-3 text-text-muted">{toJalali(task.createdAt)}</td>
+                            <td className="px-4 py-3 text-center">
+                              {task.status === 'PENDING_APPROVAL' && canApprove && (
+                                <button onClick={() => handleQuickStatus(task.id, 'DONE')}
+                                  className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-all cursor-pointer active:scale-[0.97]">
+                                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                  </svg>
+                                  تایید
+                                </button>
+                              )}
+                              {['TODO', 'IN_PROGRESS'].includes(task.status) && role === 'EMPLOYEE' && task.assignees?.some((a) => a.user.id === userId) && (
+                                <button onClick={() => handleQuickStatus(task.id, 'PENDING_APPROVAL')}
+                                  className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 transition-all cursor-pointer active:scale-[0.97]">
+                                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                  </svg>
+                                  ارسال برای تایید
+                                </button>
+                              )}
+                              {task.status === 'DONE' && (
+                                <span className="inline-flex items-center gap-1 text-xs text-green-400/60">
+                                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                  </svg>
+                                  انجام شده
+                                </span>
+                              )}
+                            </td>
                           </tr>
                         ))}
                         {project.tasks.length === 0 && (
                           <tr>
-                            <td colSpan={5} className="px-4 py-12 text-center text-text-muted">هیچ تسکی وجود ندارد</td>
+                            <td colSpan={6} className="px-4 py-12 text-center text-text-muted">هیچ تسکی وجود ندارد</td>
                           </tr>
                         )}
                       </tbody>

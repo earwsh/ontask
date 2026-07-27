@@ -1,6 +1,7 @@
 import { Router, Response } from 'express';
 import { authenticate, authorize, AuthRequest } from '../middleware/auth';
 import prisma from '../lib/prisma';
+import { notifyTaskAssignees, notifyPendingApproval, notifyTaskApproved, notifyReportAdded } from '../lib/notifications';
 
 const router = Router();
 
@@ -143,6 +144,9 @@ router.post('/', authenticate, async (req: AuthRequest, res: Response) => {
       },
       include: taskInclude,
     });
+
+    notifyTaskAssignees(task.id, task.title, assigneeIds).catch(console.error);
+
     res.status(201).json(task);
   } catch (err) {
     console.error('create task error:', err);
@@ -183,6 +187,7 @@ router.put('/:id', authenticate, async (req: AuthRequest, res: Response) => {
       for (const aid of assigneeIds) {
         await prisma.taskAssignee.create({ data: { taskId: id, userId: aid } });
       }
+      notifyTaskAssignees(id, task.title, assigneeIds).catch(console.error);
     }
 
     const updated = await prisma.task.update({
@@ -245,6 +250,13 @@ router.patch('/:id/status', authenticate, async (req: AuthRequest, res: Response
       data,
       include: taskInclude,
     });
+
+    if (status === 'PENDING_APPROVAL') {
+      notifyPendingApproval(id, task.title, task.projectId).catch(console.error);
+    } else if (status === 'DONE' && task.status === 'PENDING_APPROVAL') {
+      notifyTaskApproved(id, task.title, task.createdById).catch(console.error);
+    }
+
     res.json(updated);
   } catch (err) {
     console.error('update task status error:', err);
@@ -272,6 +284,9 @@ router.post('/:id/reports', authenticate, async (req: AuthRequest, res: Response
       data: { content, taskId: id, userId: user.id },
       include: { user: { select: { id: true, firstName: true, lastName: true } } },
     });
+
+    notifyReportAdded(id, task.title, task.projectId, `${user.firstName} ${user.lastName}`).catch(console.error);
+
     res.status(201).json(report);
   } catch (err) {
     console.error('create report error:', err);

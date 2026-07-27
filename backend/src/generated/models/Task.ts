@@ -294,6 +294,7 @@ export type TaskWhereInput = {
   assignees?: Prisma.TaskAssigneeListRelationFilter
   subtasks?: Prisma.TaskSubtaskListRelationFilter
   reports?: Prisma.TaskReportListRelationFilter
+  notifications?: Prisma.NotificationListRelationFilter
 }
 
 export type TaskOrderByWithRelationInput = {
@@ -315,6 +316,7 @@ export type TaskOrderByWithRelationInput = {
   assignees?: Prisma.TaskAssigneeOrderByRelationAggregateInput
   subtasks?: Prisma.TaskSubtaskOrderByRelationAggregateInput
   reports?: Prisma.TaskReportOrderByRelationAggregateInput
+  notifications?: Prisma.NotificationOrderByRelationAggregateInput
 }
 
 export type TaskWhereUniqueInput = Prisma.AtLeast<{
@@ -339,6 +341,7 @@ export type TaskWhereUniqueInput = Prisma.AtLeast<{
   assignees?: Prisma.TaskAssigneeListRelationFilter
   subtasks?: Prisma.TaskSubtaskListRelationFilter
   reports?: Prisma.TaskReportListRelationFilter
+  notifications?: Prisma.NotificationListRelationFilter
 }, "id">
 
 export type TaskOrderByWithAggregationInput = {
@@ -394,6 +397,7 @@ export type TaskCreateInput = {
   assignees?: Prisma.TaskAssigneeCreateNestedManyWithoutTaskInput
   subtasks?: Prisma.TaskSubtaskCreateNestedManyWithoutTaskInput
   reports?: Prisma.TaskReportCreateNestedManyWithoutTaskInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateInput = {
@@ -412,6 +416,7 @@ export type TaskUncheckedCreateInput = {
   assignees?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutTaskInput
   subtasks?: Prisma.TaskSubtaskUncheckedCreateNestedManyWithoutTaskInput
   reports?: Prisma.TaskReportUncheckedCreateNestedManyWithoutTaskInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUpdateInput = {
@@ -429,6 +434,7 @@ export type TaskUpdateInput = {
   assignees?: Prisma.TaskAssigneeUpdateManyWithoutTaskNestedInput
   subtasks?: Prisma.TaskSubtaskUpdateManyWithoutTaskNestedInput
   reports?: Prisma.TaskReportUpdateManyWithoutTaskNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateInput = {
@@ -447,6 +453,7 @@ export type TaskUncheckedUpdateInput = {
   assignees?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutTaskNestedInput
   subtasks?: Prisma.TaskSubtaskUncheckedUpdateManyWithoutTaskNestedInput
   reports?: Prisma.TaskReportUncheckedUpdateManyWithoutTaskNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskCreateManyInput = {
@@ -566,6 +573,11 @@ export type TaskScalarRelationFilter = {
   isNot?: Prisma.TaskWhereInput
 }
 
+export type TaskNullableScalarRelationFilter = {
+  is?: Prisma.TaskWhereInput | null
+  isNot?: Prisma.TaskWhereInput | null
+}
+
 export type TaskCreateNestedManyWithoutProjectInput = {
   create?: Prisma.XOR<Prisma.TaskCreateWithoutProjectInput, Prisma.TaskUncheckedCreateWithoutProjectInput> | Prisma.TaskCreateWithoutProjectInput[] | Prisma.TaskUncheckedCreateWithoutProjectInput[]
   connectOrCreate?: Prisma.TaskCreateOrConnectWithoutProjectInput | Prisma.TaskCreateOrConnectWithoutProjectInput[]
@@ -666,6 +678,22 @@ export type TaskUpdateOneRequiredWithoutReportsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TaskUpdateToOneWithWhereWithoutReportsInput, Prisma.TaskUpdateWithoutReportsInput>, Prisma.TaskUncheckedUpdateWithoutReportsInput>
 }
 
+export type TaskCreateNestedOneWithoutNotificationsInput = {
+  create?: Prisma.XOR<Prisma.TaskCreateWithoutNotificationsInput, Prisma.TaskUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.TaskCreateOrConnectWithoutNotificationsInput
+  connect?: Prisma.TaskWhereUniqueInput
+}
+
+export type TaskUpdateOneWithoutNotificationsNestedInput = {
+  create?: Prisma.XOR<Prisma.TaskCreateWithoutNotificationsInput, Prisma.TaskUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.TaskCreateOrConnectWithoutNotificationsInput
+  upsert?: Prisma.TaskUpsertWithoutNotificationsInput
+  disconnect?: Prisma.TaskWhereInput | boolean
+  delete?: Prisma.TaskWhereInput | boolean
+  connect?: Prisma.TaskWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TaskUpdateToOneWithWhereWithoutNotificationsInput, Prisma.TaskUpdateWithoutNotificationsInput>, Prisma.TaskUncheckedUpdateWithoutNotificationsInput>
+}
+
 export type TaskCreateNestedManyWithoutCreatedByInput = {
   create?: Prisma.XOR<Prisma.TaskCreateWithoutCreatedByInput, Prisma.TaskUncheckedCreateWithoutCreatedByInput> | Prisma.TaskCreateWithoutCreatedByInput[] | Prisma.TaskUncheckedCreateWithoutCreatedByInput[]
   connectOrCreate?: Prisma.TaskCreateOrConnectWithoutCreatedByInput | Prisma.TaskCreateOrConnectWithoutCreatedByInput[]
@@ -764,6 +792,7 @@ export type TaskCreateWithoutProjectInput = {
   assignees?: Prisma.TaskAssigneeCreateNestedManyWithoutTaskInput
   subtasks?: Prisma.TaskSubtaskCreateNestedManyWithoutTaskInput
   reports?: Prisma.TaskReportCreateNestedManyWithoutTaskInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateWithoutProjectInput = {
@@ -781,6 +810,7 @@ export type TaskUncheckedCreateWithoutProjectInput = {
   assignees?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutTaskInput
   subtasks?: Prisma.TaskSubtaskUncheckedCreateNestedManyWithoutTaskInput
   reports?: Prisma.TaskReportUncheckedCreateNestedManyWithoutTaskInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskCreateOrConnectWithoutProjectInput = {
@@ -841,6 +871,7 @@ export type TaskCreateWithoutAssigneesInput = {
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedTasksInput
   subtasks?: Prisma.TaskSubtaskCreateNestedManyWithoutTaskInput
   reports?: Prisma.TaskReportCreateNestedManyWithoutTaskInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateWithoutAssigneesInput = {
@@ -858,6 +889,7 @@ export type TaskUncheckedCreateWithoutAssigneesInput = {
   updatedAt?: Date | string
   subtasks?: Prisma.TaskSubtaskUncheckedCreateNestedManyWithoutTaskInput
   reports?: Prisma.TaskReportUncheckedCreateNestedManyWithoutTaskInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskCreateOrConnectWithoutAssigneesInput = {
@@ -890,6 +922,7 @@ export type TaskUpdateWithoutAssigneesInput = {
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedTasksNestedInput
   subtasks?: Prisma.TaskSubtaskUpdateManyWithoutTaskNestedInput
   reports?: Prisma.TaskReportUpdateManyWithoutTaskNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateWithoutAssigneesInput = {
@@ -907,6 +940,7 @@ export type TaskUncheckedUpdateWithoutAssigneesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subtasks?: Prisma.TaskSubtaskUncheckedUpdateManyWithoutTaskNestedInput
   reports?: Prisma.TaskReportUncheckedUpdateManyWithoutTaskNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskCreateWithoutSubtasksInput = {
@@ -923,6 +957,7 @@ export type TaskCreateWithoutSubtasksInput = {
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedTasksInput
   assignees?: Prisma.TaskAssigneeCreateNestedManyWithoutTaskInput
   reports?: Prisma.TaskReportCreateNestedManyWithoutTaskInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateWithoutSubtasksInput = {
@@ -940,6 +975,7 @@ export type TaskUncheckedCreateWithoutSubtasksInput = {
   updatedAt?: Date | string
   assignees?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutTaskInput
   reports?: Prisma.TaskReportUncheckedCreateNestedManyWithoutTaskInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskCreateOrConnectWithoutSubtasksInput = {
@@ -972,6 +1008,7 @@ export type TaskUpdateWithoutSubtasksInput = {
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedTasksNestedInput
   assignees?: Prisma.TaskAssigneeUpdateManyWithoutTaskNestedInput
   reports?: Prisma.TaskReportUpdateManyWithoutTaskNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateWithoutSubtasksInput = {
@@ -989,6 +1026,7 @@ export type TaskUncheckedUpdateWithoutSubtasksInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignees?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutTaskNestedInput
   reports?: Prisma.TaskReportUncheckedUpdateManyWithoutTaskNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskCreateWithoutReportsInput = {
@@ -1005,6 +1043,7 @@ export type TaskCreateWithoutReportsInput = {
   createdBy: Prisma.UserCreateNestedOneWithoutCreatedTasksInput
   assignees?: Prisma.TaskAssigneeCreateNestedManyWithoutTaskInput
   subtasks?: Prisma.TaskSubtaskCreateNestedManyWithoutTaskInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateWithoutReportsInput = {
@@ -1022,6 +1061,7 @@ export type TaskUncheckedCreateWithoutReportsInput = {
   updatedAt?: Date | string
   assignees?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutTaskInput
   subtasks?: Prisma.TaskSubtaskUncheckedCreateNestedManyWithoutTaskInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskCreateOrConnectWithoutReportsInput = {
@@ -1054,6 +1094,7 @@ export type TaskUpdateWithoutReportsInput = {
   createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedTasksNestedInput
   assignees?: Prisma.TaskAssigneeUpdateManyWithoutTaskNestedInput
   subtasks?: Prisma.TaskSubtaskUpdateManyWithoutTaskNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateWithoutReportsInput = {
@@ -1071,6 +1112,93 @@ export type TaskUncheckedUpdateWithoutReportsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   assignees?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutTaskNestedInput
   subtasks?: Prisma.TaskSubtaskUncheckedUpdateManyWithoutTaskNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTaskNestedInput
+}
+
+export type TaskCreateWithoutNotificationsInput = {
+  title: string
+  description?: string | null
+  status?: $Enums.TaskStatus
+  deadline?: Date | string | null
+  estimatedHours?: number | null
+  approvedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  approvedBy?: Prisma.UserCreateNestedOneWithoutApprovedTasksInput
+  project: Prisma.ProjectCreateNestedOneWithoutTasksInput
+  createdBy: Prisma.UserCreateNestedOneWithoutCreatedTasksInput
+  assignees?: Prisma.TaskAssigneeCreateNestedManyWithoutTaskInput
+  subtasks?: Prisma.TaskSubtaskCreateNestedManyWithoutTaskInput
+  reports?: Prisma.TaskReportCreateNestedManyWithoutTaskInput
+}
+
+export type TaskUncheckedCreateWithoutNotificationsInput = {
+  id?: number
+  title: string
+  description?: string | null
+  status?: $Enums.TaskStatus
+  deadline?: Date | string | null
+  estimatedHours?: number | null
+  approvedById?: number | null
+  approvedAt?: Date | string | null
+  projectId: number
+  createdById: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  assignees?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutTaskInput
+  subtasks?: Prisma.TaskSubtaskUncheckedCreateNestedManyWithoutTaskInput
+  reports?: Prisma.TaskReportUncheckedCreateNestedManyWithoutTaskInput
+}
+
+export type TaskCreateOrConnectWithoutNotificationsInput = {
+  where: Prisma.TaskWhereUniqueInput
+  create: Prisma.XOR<Prisma.TaskCreateWithoutNotificationsInput, Prisma.TaskUncheckedCreateWithoutNotificationsInput>
+}
+
+export type TaskUpsertWithoutNotificationsInput = {
+  update: Prisma.XOR<Prisma.TaskUpdateWithoutNotificationsInput, Prisma.TaskUncheckedUpdateWithoutNotificationsInput>
+  create: Prisma.XOR<Prisma.TaskCreateWithoutNotificationsInput, Prisma.TaskUncheckedCreateWithoutNotificationsInput>
+  where?: Prisma.TaskWhereInput
+}
+
+export type TaskUpdateToOneWithWhereWithoutNotificationsInput = {
+  where?: Prisma.TaskWhereInput
+  data: Prisma.XOR<Prisma.TaskUpdateWithoutNotificationsInput, Prisma.TaskUncheckedUpdateWithoutNotificationsInput>
+}
+
+export type TaskUpdateWithoutNotificationsInput = {
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
+  deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  estimatedHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  approvedBy?: Prisma.UserUpdateOneWithoutApprovedTasksNestedInput
+  project?: Prisma.ProjectUpdateOneRequiredWithoutTasksNestedInput
+  createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedTasksNestedInput
+  assignees?: Prisma.TaskAssigneeUpdateManyWithoutTaskNestedInput
+  subtasks?: Prisma.TaskSubtaskUpdateManyWithoutTaskNestedInput
+  reports?: Prisma.TaskReportUpdateManyWithoutTaskNestedInput
+}
+
+export type TaskUncheckedUpdateWithoutNotificationsInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumTaskStatusFieldUpdateOperationsInput | $Enums.TaskStatus
+  deadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  estimatedHours?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  approvedById?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  approvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  projectId?: Prisma.IntFieldUpdateOperationsInput | number
+  createdById?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  assignees?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutTaskNestedInput
+  subtasks?: Prisma.TaskSubtaskUncheckedUpdateManyWithoutTaskNestedInput
+  reports?: Prisma.TaskReportUncheckedUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskCreateWithoutCreatedByInput = {
@@ -1087,6 +1215,7 @@ export type TaskCreateWithoutCreatedByInput = {
   assignees?: Prisma.TaskAssigneeCreateNestedManyWithoutTaskInput
   subtasks?: Prisma.TaskSubtaskCreateNestedManyWithoutTaskInput
   reports?: Prisma.TaskReportCreateNestedManyWithoutTaskInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateWithoutCreatedByInput = {
@@ -1104,6 +1233,7 @@ export type TaskUncheckedCreateWithoutCreatedByInput = {
   assignees?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutTaskInput
   subtasks?: Prisma.TaskSubtaskUncheckedCreateNestedManyWithoutTaskInput
   reports?: Prisma.TaskReportUncheckedCreateNestedManyWithoutTaskInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskCreateOrConnectWithoutCreatedByInput = {
@@ -1130,6 +1260,7 @@ export type TaskCreateWithoutApprovedByInput = {
   assignees?: Prisma.TaskAssigneeCreateNestedManyWithoutTaskInput
   subtasks?: Prisma.TaskSubtaskCreateNestedManyWithoutTaskInput
   reports?: Prisma.TaskReportCreateNestedManyWithoutTaskInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutTaskInput
 }
 
 export type TaskUncheckedCreateWithoutApprovedByInput = {
@@ -1147,6 +1278,7 @@ export type TaskUncheckedCreateWithoutApprovedByInput = {
   assignees?: Prisma.TaskAssigneeUncheckedCreateNestedManyWithoutTaskInput
   subtasks?: Prisma.TaskSubtaskUncheckedCreateNestedManyWithoutTaskInput
   reports?: Prisma.TaskReportUncheckedCreateNestedManyWithoutTaskInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTaskInput
 }
 
 export type TaskCreateOrConnectWithoutApprovedByInput = {
@@ -1219,6 +1351,7 @@ export type TaskUpdateWithoutProjectInput = {
   assignees?: Prisma.TaskAssigneeUpdateManyWithoutTaskNestedInput
   subtasks?: Prisma.TaskSubtaskUpdateManyWithoutTaskNestedInput
   reports?: Prisma.TaskReportUpdateManyWithoutTaskNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateWithoutProjectInput = {
@@ -1236,6 +1369,7 @@ export type TaskUncheckedUpdateWithoutProjectInput = {
   assignees?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutTaskNestedInput
   subtasks?: Prisma.TaskSubtaskUncheckedUpdateManyWithoutTaskNestedInput
   reports?: Prisma.TaskReportUncheckedUpdateManyWithoutTaskNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateManyWithoutProjectInput = {
@@ -1294,6 +1428,7 @@ export type TaskUpdateWithoutCreatedByInput = {
   assignees?: Prisma.TaskAssigneeUpdateManyWithoutTaskNestedInput
   subtasks?: Prisma.TaskSubtaskUpdateManyWithoutTaskNestedInput
   reports?: Prisma.TaskReportUpdateManyWithoutTaskNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateWithoutCreatedByInput = {
@@ -1311,6 +1446,7 @@ export type TaskUncheckedUpdateWithoutCreatedByInput = {
   assignees?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutTaskNestedInput
   subtasks?: Prisma.TaskSubtaskUncheckedUpdateManyWithoutTaskNestedInput
   reports?: Prisma.TaskReportUncheckedUpdateManyWithoutTaskNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateManyWithoutCreatedByInput = {
@@ -1341,6 +1477,7 @@ export type TaskUpdateWithoutApprovedByInput = {
   assignees?: Prisma.TaskAssigneeUpdateManyWithoutTaskNestedInput
   subtasks?: Prisma.TaskSubtaskUpdateManyWithoutTaskNestedInput
   reports?: Prisma.TaskReportUpdateManyWithoutTaskNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateWithoutApprovedByInput = {
@@ -1358,6 +1495,7 @@ export type TaskUncheckedUpdateWithoutApprovedByInput = {
   assignees?: Prisma.TaskAssigneeUncheckedUpdateManyWithoutTaskNestedInput
   subtasks?: Prisma.TaskSubtaskUncheckedUpdateManyWithoutTaskNestedInput
   reports?: Prisma.TaskReportUncheckedUpdateManyWithoutTaskNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTaskNestedInput
 }
 
 export type TaskUncheckedUpdateManyWithoutApprovedByInput = {
@@ -1383,12 +1521,14 @@ export type TaskCountOutputType = {
   assignees: number
   subtasks: number
   reports: number
+  notifications: number
 }
 
 export type TaskCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   assignees?: boolean | TaskCountOutputTypeCountAssigneesArgs
   subtasks?: boolean | TaskCountOutputTypeCountSubtasksArgs
   reports?: boolean | TaskCountOutputTypeCountReportsArgs
+  notifications?: boolean | TaskCountOutputTypeCountNotificationsArgs
 }
 
 /**
@@ -1422,6 +1562,13 @@ export type TaskCountOutputTypeCountReportsArgs<ExtArgs extends runtime.Types.Ex
   where?: Prisma.TaskReportWhereInput
 }
 
+/**
+ * TaskCountOutputType without action
+ */
+export type TaskCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NotificationWhereInput
+}
+
 
 export type TaskSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1442,6 +1589,7 @@ export type TaskSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   assignees?: boolean | Prisma.Task$assigneesArgs<ExtArgs>
   subtasks?: boolean | Prisma.Task$subtasksArgs<ExtArgs>
   reports?: boolean | Prisma.Task$reportsArgs<ExtArgs>
+  notifications?: boolean | Prisma.Task$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.TaskCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["task"]>
 
@@ -1504,6 +1652,7 @@ export type TaskInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   assignees?: boolean | Prisma.Task$assigneesArgs<ExtArgs>
   subtasks?: boolean | Prisma.Task$subtasksArgs<ExtArgs>
   reports?: boolean | Prisma.Task$reportsArgs<ExtArgs>
+  notifications?: boolean | Prisma.Task$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.TaskCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type TaskIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1526,6 +1675,7 @@ export type $TaskPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     assignees: Prisma.$TaskAssigneePayload<ExtArgs>[]
     subtasks: Prisma.$TaskSubtaskPayload<ExtArgs>[]
     reports: Prisma.$TaskReportPayload<ExtArgs>[]
+    notifications: Prisma.$NotificationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1940,6 +2090,7 @@ export interface Prisma__TaskClient<T, Null = never, ExtArgs extends runtime.Typ
   assignees<T extends Prisma.Task$assigneesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Task$assigneesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskAssigneePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   subtasks<T extends Prisma.Task$subtasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Task$subtasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskSubtaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reports<T extends Prisma.Task$reportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Task$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notifications<T extends Prisma.Task$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Task$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2470,6 +2621,30 @@ export type Task$reportsArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.TaskReportScalarFieldEnum | Prisma.TaskReportScalarFieldEnum[]
+}
+
+/**
+ * Task.notifications
+ */
+export type Task$notificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Notification
+   */
+  select?: Prisma.NotificationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Notification
+   */
+  omit?: Prisma.NotificationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificationInclude<ExtArgs> | null
+  where?: Prisma.NotificationWhereInput
+  orderBy?: Prisma.NotificationOrderByWithRelationInput | Prisma.NotificationOrderByWithRelationInput[]
+  cursor?: Prisma.NotificationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[]
 }
 
 /**

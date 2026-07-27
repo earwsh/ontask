@@ -15,12 +15,15 @@ export default function AnalyticsRedirectPage() {
     }
     const u = JSON.parse(stored);
     setLoading(false);
-    if (u.role === 'EMPLOYEE') {
-      router.push('/dashboard/analytics/employee');
-    } else if (u.role === 'DEPARTMENT_MANAGER') {
+    const role = u.role;
+    if (role === 'CEO' || role === 'HR_MANAGER') {
+      router.push('/dashboard/analytics/overview');
+    } else if (role === 'DEPARTMENT_MANAGER') {
       router.push('/dashboard/analytics/department');
-    } else if (u.role === 'TECHNICAL_MANAGER') {
+    } else if (role === 'TECHNICAL_MANAGER') {
       router.push('/dashboard/analytics/technical');
+    } else if (role === 'EMPLOYEE') {
+      router.push('/dashboard/analytics/employee');
     } else {
       router.push('/dashboard/analytics/overview');
     }
@@ -29,8 +32,14 @@ export default function AnalyticsRedirectPage() {
   if (loading) return null;
 
   return (
-    <div className="flex items-center justify-center h-full">
-      <div className="text-text-muted">در حال هدایت...</div>
+    <div className="flex h-full items-center justify-center">
+      <div className="flex items-center gap-2 text-text-muted">
+        <svg className="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+        </svg>
+        <span>در حال هدایت...</span>
+      </div>
     </div>
   );
 }

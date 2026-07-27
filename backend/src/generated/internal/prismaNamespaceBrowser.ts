@@ -58,6 +58,7 @@ export const ModelName = {
   TaskAssignee: 'TaskAssignee',
   TaskSubtask: 'TaskSubtask',
   TaskReport: 'TaskReport',
+  Notification: 'Notification',
   User: 'User'
 } as const
 
@@ -161,6 +162,20 @@ export const TaskReportScalarFieldEnum = {
 } as const
 
 export type TaskReportScalarFieldEnum = (typeof TaskReportScalarFieldEnum)[keyof typeof TaskReportScalarFieldEnum]
+
+
+export const NotificationScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  title: 'title',
+  message: 'message',
+  read: 'read',
+  userId: 'userId',
+  taskId: 'taskId',
+  createdAt: 'createdAt'
+} as const
+
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {

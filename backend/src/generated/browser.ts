@@ -53,6 +53,11 @@ export type TaskSubtask = Prisma.TaskSubtaskModel
  */
 export type TaskReport = Prisma.TaskReportModel
 /**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel
+/**
  * Model User
  * 
  */

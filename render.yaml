@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: ontask-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npx prisma generate && npm run build
+    startCommand: npx prisma migrate deploy && npm start
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ontask-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 4000
+
+  - type: web
+    name: ontask-web
+    runtime: node
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: BACKEND_URL
+        fromService:
+          name: ontask-api
+          type: web
+          property: url
+
+databases:
+  - name: ontask-db
+    databaseName: ontask
+    plan: free

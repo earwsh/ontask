@@ -1,0 +1,54 @@
+'use client';
+
+import { useRouter, usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
+const tabs = [
+  { key: 'overview', label: 'نمای کلی', roles: ['CEO', 'HR_MANAGER'] },
+  { key: 'technical', label: 'تحلیل فنی', roles: ['TECHNICAL_MANAGER', 'CEO', 'HR_MANAGER'] },
+  { key: 'department', label: 'دپارتمان', roles: ['DEPARTMENT_MANAGER', 'TECHNICAL_MANAGER', 'CEO', 'HR_MANAGER'] },
+  { key: 'employee', label: 'تحلیل من', roles: ['EMPLOYEE'] },
+];
+
+export default function AnalyticsLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const [userRole, setUserRole] = useState<string>('');
+
+  useEffect(() => {
+    try {
+      const u = JSON.parse(localStorage.getItem('user') || '{}');
+      setUserRole(u.role || '');
+    } catch {}
+  }, []);
+
+  const currentTab = pathname.split('/').pop() || '';
+
+  const visibleTabs = tabs.filter((t) => t.roles.includes(userRole));
+
+  return (
+    <div className="flex h-full flex-col overflow-hidden">
+      {visibleTabs.length > 1 && (
+        <div className="mb-4 flex shrink-0 gap-1 overflow-x-auto rounded-2xl border border-[rgba(255,255,255,0.06)] bg-[rgba(22,27,38,0.6)] p-1.5">
+          {visibleTabs.map((tab) => {
+            const isActive = currentTab === tab.key || (currentTab === 'analytics' && tab.key === 'overview' && visibleTabs.some(t => t.key !== 'employee'));
+            return (
+              <button
+                key={tab.key}
+                onClick={() => router.push(`/dashboard/analytics/${tab.key}`)}
+                className={`cursor-pointer whitespace-nowrap rounded-xl px-4 py-2 text-sm font-medium transition-all duration-200 ${
+                  isActive
+                    ? 'bg-primary text-white shadow-lg shadow-primary/20'
+                    : 'text-text-muted hover:bg-[rgba(255,255,255,0.04)] hover:text-white'
+                }`}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
+      <div className="flex-1 overflow-y-auto">{children}</div>
+    </div>
+  );
+}

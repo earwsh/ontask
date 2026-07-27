@@ -35,8 +35,9 @@ router.post('/', authenticate, authorize('CEO', 'HR_MANAGER'), async (req: AuthR
     if (existing) {
       return res.status(400).json({ error: 'Email already exists' });
     }
-    if (nationalId) {
-      const existingNationalId = await prisma.user.findUnique({ where: { nationalId } });
+    const cleanNationalId = nationalId || undefined;
+    if (cleanNationalId) {
+      const existingNationalId = await prisma.user.findUnique({ where: { nationalId: cleanNationalId } });
       if (existingNationalId) {
         return res.status(400).json({ error: 'National ID already exists' });
       }
@@ -44,9 +45,9 @@ router.post('/', authenticate, authorize('CEO', 'HR_MANAGER'), async (req: AuthR
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
       data: {
-        email, password: hashedPassword, firstName, lastName, displayName, role,
+        email, password: hashedPassword, firstName, lastName, displayName: displayName || undefined, role,
         departmentId: departmentId ? parseInt(departmentId) : null,
-        phone, nationalId, position,
+        phone: phone || undefined, nationalId: cleanNationalId, position: position || undefined,
         birthDate: birthDate ? new Date(birthDate) : undefined,
         startDate: startDate ? new Date(startDate) : undefined,
       },
@@ -54,6 +55,7 @@ router.post('/', authenticate, authorize('CEO', 'HR_MANAGER'), async (req: AuthR
     });
     res.status(201).json(user);
   } catch (err) {
+    console.error('create user error:', err);
     res.status(500).json({ error: 'Failed to create user' });
   }
 });
@@ -81,15 +83,16 @@ router.put('/:id', authenticate, authorize('CEO', 'HR_MANAGER'), async (req: Aut
     if (displayName !== undefined) data.displayName = displayName;
     if (role) data.role = role;
     if (departmentId !== undefined) data.departmentId = departmentId ? parseInt(departmentId) : null;
-    if (phone !== undefined) data.phone = phone;
-    if (nationalId !== undefined) data.nationalId = nationalId;
-    if (position !== undefined) data.position = position;
+    if (phone !== undefined) data.phone = phone || null;
+    if (nationalId !== undefined) data.nationalId = nationalId || null;
+    if (position !== undefined) data.position = position || null;
     if (birthDate !== undefined) data.birthDate = birthDate ? new Date(birthDate) : null;
     if (startDate !== undefined) data.startDate = startDate ? new Date(startDate) : null;
     if (password) data.password = await bcrypt.hash(password, 10);
     const user = await prisma.user.update({ where: { id }, data, select: userSelect });
     res.json(user);
   } catch (err) {
+    console.error('update user error:', err);
     res.status(500).json({ error: 'Failed to update user' });
   }
 });

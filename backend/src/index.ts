@@ -7,11 +7,12 @@ import departmentRoutes from './routes/departments';
 import projectRoutes from './routes/projects';
 import taskRoutes from './routes/tasks';
 import analyticsRoutes from './routes/analytics';
+import notificationRoutes from './routes/notifications';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
@@ -20,6 +21,7 @@ app.use('/api/departments', departmentRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok' });

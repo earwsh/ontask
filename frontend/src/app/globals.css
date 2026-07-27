@@ -11,6 +11,8 @@
   --color-sidebar: #111827;
   --color-card: #161B26;
   --color-card-hover: #1C2333;
+  --color-text-muted: #94A3B8;
+  --color-text-secondary: #CBD5E1;
 
   --animate-fade-in: fadeIn 0.5s ease-out;
   --animate-slide-up: slideUp 0.5s ease-out;
